@@ -4,11 +4,12 @@
 }
 
 .item-img{
-  width:400px;
+  width:450px;
+  height: 500px;
 }
 
 .main{
-  display: flex; /** 가로정렬 **/
-  justify-content: center;  /** 중앙으로 오게 **/
+  display: flex;
+  justify-content: center;
 }
 
