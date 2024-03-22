@@ -21,12 +21,14 @@ function App() {
   const [userSelect,setUserSelect] = useState(null);
   const [computerSelect, setComputerSelect]=useState(null);
   const [result,setResult]=useState("");
+  const [isStarted, setIsStarted] = useState(false);
+
   const play=(userChoice) => {
     setUserSelect(choice[userChoice]);
     let computerChoice = randomChoice();
     setComputerSelect(computerChoice);
     setResult(judgement(choice[userChoice],computerChoice));
-  };
+  }
 
   const randomChoice=()=>{
     let itemArray = Object.keys(choice);  //객체에 키값만 뽑아서 어레이로 만들어주는 함수다
@@ -50,7 +52,13 @@ function App() {
     else if (user.name === "Paper") return computer.name === "Rock" ? "win" : "lose";
   };
   return (
+    !isStarted
+    ?
     <div>
+      <button onClick={() => setIsStarted(true)}>시작하기</button>
+    </div>
+    :
+    <div className="wrapper">
       <div className="main">
         <Box title="You" item={userSelect} result={result}/>
         <Box title="Computer" item={computerSelect} result={result} />
