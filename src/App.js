@@ -55,12 +55,15 @@ function App() {
     !isStarted
     ?
     <div>
-      <button onClick={() => setIsStarted(true)}>시작하기</button>
+      <button className="start-button" onClick={() => setIsStarted(true)}>
+        <img src="/images/button_start1.png" />
+      </button>
     </div>
     :
     <div className="wrapper">
       <div className="main">
         <Box title="You" item={userSelect} result={result}/>
+        <img src="/images/versus.png"/>
         <Box title="Computer" item={computerSelect} result={result} />
       </div>
       <div className="main">
