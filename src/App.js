@@ -1,79 +1,19 @@
-import {useState} from "react";
-import './App.css';
-import Box from "./component/Box";
+import React from 'react'
+import "./App.css"
 
-const choice = {
-  rock:{
-    name:"Rock",
-    img:"./images/rock.png"
-  },
-  scissors:{
-    name:"Scissors",
-    img:"./images/scissors.png"
-  },
-  paper:{
-    name:"Paper",
-    img:"./images/paper.png"
-  }
-}
+// 1. 앱이 실행되자마자 현재위치기반의 날씨가 보인다
+// 2. 날씨정보에는 도시, 섭씨 화씨 날씨 상태
+// 3. 5개의 버틑이 있다 (1개는 현재위치 4개는 다른도시)
+// 4. 도시버튼을 클릭할 때 마다 도시별 날씨가 나온다
+// 5. 현재위치 버튼을 누르면 다시 현재위치 기반의 날씨가 나온다
+// 6. 데이터를 들고오는 동안 로딩 스피너가 돈다
 
-function App() {
-  const [userSelect,setUserSelect] = useState(null);
-  const [computerSelect, setComputerSelect]=useState(null);
-  const [result,setResult]=useState("");
-  const [isStarted, setIsStarted] = useState(false);
-
-  const play=(userChoice) => {
-    setUserSelect(choice[userChoice]);
-    let computerChoice = randomChoice();
-    setComputerSelect(computerChoice);
-    setResult(judgement(choice[userChoice],computerChoice));
-  }
-
-  const randomChoice=()=>{
-    let itemArray = Object.keys(choice);  //객체에 키값만 뽑아서 어레이로 만들어주는 함수다
-    // console.log("item array", itemArray);
-    let randomItem = Math.floor(Math.random() * itemArray.length);
-    let final = itemArray[randomItem];
-    
-    return choice[final];
-  };
-  
-  const judgement = (user, computer) => {
-    // console.log("user", user, "computer", computer);
-
-    // 유저 입장에서
-    if (user.name === computer.name) {
-      return "tie";
-    } else if (user.name === "Rock")
-      return computer.name === "Scissors" ? "win" : "lose";
-    else if (user.name === "Scissors")
-      return computer.name == "Paper" ? "win" : "lose";
-    else if (user.name === "Paper") return computer.name === "Rock" ? "win" : "lose";
-  };
+const App = () => {
   return (
-    !isStarted
-    ?
     <div>
-      <button className="start-button" onClick={() => setIsStarted(true)}>
-        <img src="/images/button_start1.png" />
-      </button>
-    </div>
-    :
-    <div className="wrapper">
-      <div className="main">
-        <Box title="You" item={userSelect} result={result}/>
-        <img src="/images/versus.png"/>
-        <Box title="Computer" item={computerSelect} result={result} />
-      </div>
-      <div className="main">
-      <button className="scissors" onClick={() => play("scissors")}>가위</button>
-      <button className="rock" onClick={() => play("rock")}>바위</button>
-      <button className="paper" onClick={() => play("paper")}>보</button>
-      </div>
+      hi
     </div>
   );
 }
 
 export default App;
-                      
