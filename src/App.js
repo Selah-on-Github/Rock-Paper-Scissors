@@ -1,108 +1,77 @@
-import React, { useEffect, useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./App.css";
-import { Container } from "react-bootstrap";
-import WeatherBox from "./component/WeatherBox";
-import WeatherButton from "./component/WeatherButton";
-import { ClipLoader } from "react-spinners";
+import {useState} from "react";
+import './App.css';
+import Box from "./component/Box";
 
-// 1. 앱이 실행되자마자 현재위치기반의 날씨가 보인다
-// 2. 날씨정보에는 도시, 섭씨 화씨 날씨 상태
-// 3. 5개의 버틑이 있다 (1개는 현재위치 4개는 다른도시)
-// 4. 도시버튼을 클릭할 때 마다 도시별 날씨가 나온다
-// 5. 현재위치 버튼을 누르면 다시 현재위치 기반의 날씨가 나온다
-// 6. 데이터를 들고오는 동안 로딩 스피너가 돈다
+const choice = {
+  rock:{
+    name:"Rock",
+    img:"./images/rock.png"
+  },
+  scissors:{
+    name:"Scissors",
+    img:"./images/scissors.png"
+  },
+  paper:{
+    name:"Paper",
+    img:"./images/paper.png"
+  }
+}
 
-const cities=['paris', 'new york', 'tokyo', 'seoul'];
+function App() {
+  const [userSelect,setUserSelect] = useState(null);
+  const [computerSelect, setComputerSelect]=useState(null);
+  const [result,setResult]=useState("");
+  const [isStarted, setIsStarted] = useState(false);
 
-function App = () => {
-  const [loading, setLoading] = useState(false);
-  const [city,setCity]=useState(null);
-  const [weather, setWeather] = useState(null);
-  
-  
-  const getWeatherByCurrentLocation = async (lat, lon) => {
-    try{
-      let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=75f02e94ccf566e2fcff4b5dceadb010$units=metric`; 
-      const response = await fetch(url);
-      const data = await response.json();
-      
-      setWeather(data);
-      setLoading(false);
-    } catch(err) {
-      setAPIError(err.message);
-      setLoading(false);    }
+  const play=(userChoice) => {
+    setUserSelect(choice[userChoice]);
+    let computerChoice = randomChoice();
+    setComputerSelect(computerChoice);
+    setResult(judgement(choice[userChoice],computerChoice));
+  };
+
+  const randomChoice=()=>{
+    let itemArray = Object.keys(choice);  //객체에 키값만 뽑아서 어레이로 만들어주는 함수다
+    // console.log("item array", itemArray);
+    let randomItem = Math.floor(Math.random() * itemArray.length);
+    let final = itemArray[randomItem];
     
+    return choice[final];
   };
   
-  const getCurrentLocation = () => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      // let lat = position.coords.latitude;
-      // let lon = position.coords.longitude;
-      // console.log("현재 위치", lat, lon);
-      // getWeatherByCurrentLocation(lat, lon);
+  const judgement = (user, computer) => {
+    // console.log("user", user, "computer", computer);
 
-      const { latitude, longitude } = position.coords;
-      getWeatherByCurrentLocation(latitude, longitude);
-
-    }); 
+    // 유저 입장에서
+    if (user.name === computer.name) {
+      return "tie";
+    } else if (user.name === "Rock")
+      return computer.name === "Scissors" ? "win" : "lose";
+    else if (user.name === "Scissors")
+      return computer.name == "Paper" ? "win" : "lose";
+    else if (user.name === "Paper") return computer.name === "Rock" ? "win" : "lose";
   };
+  return (
+    !isStarted 
+    ? 
+    <div>
+      <button onClick={() => setIsStarted(true)}>시작하기</button> 
+    </div>
+    :
+    <div className="wrapper">
+      
+      <div className="main">
+        <Box title="You" item={userSelect} result={result} />
+        <Box title="Computer" item={computerSelect} result={result} />
+      </div>
+      <div className="main">
+        <button className="scissors" onClick={() => play("scissors")}>가위</button>
+        <button className="rock" onClick={() => play("rock")}>바위</button>
+        <button className="paper" onClick={() => play("paper")}>보</button>
+      </div>
+    </div>
+  );
+}
 
-  const getWeatherByCity = async () => {
-  try{
-    let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=75f02e94ccf566e2fcff4b5dceadb010$units=metric`;
-    const response = await fetch(url);
-    const data = await response.json();
-    // console.log("Data", data);
-
-    setWeather(data);
-    setLoading(false);
-  } catch (err) {
-    console.log(err);
-    setAPIError(err.message);
-    setLoading(false);
-  }
-  };
-
-  useEffect(() => {
-    if (city == null) {
-      setLoading(true);
-      getCurrentLocation();
-    } else {
-   setLoading(true);
-   getWeatherByCity();
-    }
- }, [city]);
-
- const handleCityChange = (city) => {
-  if (city === "current") {
-    setCity(null);
-  } else {
-    setCity(city);
-  }
-};
-
-return (
-  <>
-    <Container className="vh-100">
-      {loading ? (
-        <div className="w-100 vh-100 d-flex justify-content-center align-items-center">
-          <ClipLoader color="#f86c6b" size={150} loading={loading} />
-        </div>
-      ) : !apiError ? (
-        <div class="main-container">
-          <WeatherBox weather={weather} />
-          <WeatherButton
-            cities={cities}
-            handleCityChange={handleCityChange}
-            selectedCity={city}
-          />
-        </div>
-      ) : (
-        apiError
-      )}
-    </Container>
-  </>
-);
-};
 export default App;
+                      
